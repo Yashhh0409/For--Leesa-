@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Leesa ❤️</title>
+    <style>
+        body {
+            background-color: #ffdae0; /* Solid Pink Background */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        /* Canvas for falling hearts */
+        #heartCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none; /* Dil touch karne mein rukawat nahi banenge */
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9); /* Transparent white */
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 80%;
+            max-width: 350px;
+            z-index: 10;
+            position: relative;
+        }
+
+        img { width: 140px; border-radius: 10px; margin-bottom: 15px; }
+        h1 { color: #d81b60; font-size: 20px; margin-bottom: 20px; }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        #yesBtn {
+            background-color: #ff4081;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 64, 129, 0.3);
+        }
+
+        #noBtn {
+            background-color: #fce4ec;
+            color: #d81b60;
+            padding: 12px 25px;
+            border: 2px solid #ff4081;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1000;
+            touch-action: none;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <canvas id="heartCanvas"></canvas>
+
+    <div class="container" id="main-box">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG52ZzZueXpueG52ZzZueXpueG52ZzZueXpueG52ZzZueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif">
+        <h1>Leesa, will you be my Valentine?</h1>
+        <div class="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="success-box">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHpueG52ZzZueXpueG52ZzZueXpueG52ZzZueXpueG52ZzZueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/MDJ9IbxxvDUQM/giphy.gif">
+        <h1>YAYYY! ❤️ Knew you'd say yes Zaina!</h1>
+    </div>
+
+    <script>
+        // --- Falling Hearts Animation ---
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const hearts = [];
+        function createHeart() {
+            return {
+                x: Math.random() * canvas.width,
+                y: -20,
+                size: Math.random() * 15 + 10,
+                speed: Math.random() * 2 + 1,
+                opacity: Math.random() * 0.5 + 0.3
+            };
+        }
+
+        function drawHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach((heart, index) => {
+                ctx.globalAlpha = heart.opacity;
+                ctx.font = `${heart.size}px serif`;
+                ctx.fillText('🩷', heart.x, heart.y);
+                heart.y += heart.speed;
+                if (heart.y > canvas.height) hearts[index] = createHeart();
+            });
+            requestAnimationFrame(drawHearts);
+        }
+
+        for (let i = 0; i < 20; i++) hearts.push(createHeart());
+        drawHearts();
+
+        // --- Button Logic ---
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+
+        function moveButton(e) {
+            if(e) e.preventDefault();
+            noBtn.style.position = "fixed"; 
+            const padding = 50; 
+            const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+            const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+
+            const newX = Math.floor(Math.random() * (maxX - padding)) + padding;
+            const newY = Math.floor(Math.random() * (maxY - padding)) + padding;
+
+            noBtn.style.left = newX + "px";
+            noBtn.style.top = newY + "px";
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton);
+        noBtn.addEventListener('click', moveButton);
+
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('main-box').classList.add('hidden');
+            document.getElementById('success-box').classList.remove('hidden');
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
